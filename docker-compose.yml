@@ -1,0 +1,29 @@
+version: '3.7'
+
+networks:
+    net: {}
+
+services:
+    nginx:
+        build: ./nginx
+        container_name: nginx
+        restart: always #why we need this
+        ports: 
+            - "8000:80"
+        depends_on: 
+            - flask
+
+    flask:
+        build: ./flask
+        container_name: flask # switch to service name
+        restart: always
+        environment: 
+            - APP_NAME=flask_app
+        env_file: 
+            - .env.docker.flask
+        expose:
+            - 8888
+        command: sh -c "
+            uwsgi /app/app.ini"
+        volumes:
+            - ./flask:/app:cached

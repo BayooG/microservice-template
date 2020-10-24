@@ -1,0 +1,25 @@
+version: '3.7'
+
+networks:
+    debug: {}
+
+volumes: 
+    debug_bolume: {}
+
+services: 
+    flask:
+        build: ./flask
+        container_name: flask
+        restart: always
+        environment: 
+            ATTACH_DEBUGGER: ${DEBUG}
+            FLASK_APP: "manage.py"
+            FLASK_ENV: "development"
+        env_file:
+            - ./.env.docker.dev.flask
+        ports: 
+            - 5000:5000
+            - 10001:10001
+        volumes:
+            - ./flask:/app:cached
+        command: python manage.py debug
